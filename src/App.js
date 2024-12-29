@@ -1,10 +1,16 @@
 import './App.css';
 import Body from './component/Body';
-import Header from './component/Header';
-export default function App() {
+import { Provider } from 'react-redux';
+import appStore from './Utils/appStore';
+
+function App() {  
   return (
-    <>
-    <Body/>
-    </>
-  )
+    <div className=''>
+    <Provider store={appStore}>
+      <Body/>
+    </Provider>
+    </div>
+  );
 }
+
+export default App;
