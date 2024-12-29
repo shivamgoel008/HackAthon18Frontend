@@ -31,10 +31,38 @@ const Login = () => {
 
     if (isSignInForm) {
       // todo
-    }
+      var url =
+        "https://localhost:7235/Account/register-user/" +
+        name.current?.value +
+        "/" +
+        email.current?.value +
+        "/" +
+        password.current?.value;
 
-    if (!isSignInForm) {
+        try {
+          // const response = await axios.post(url);
+          // console.log(response);
+          if(true){
+            
+            dispatch(
+              addUser(
+                {
+                  uid: "shivamgoel150",
+                  email: "shivamgoel150@gmail.com",
+                  displayName: "Shivam Goel",
+                  photoURL: "",
+                })
+            );
+            navigate("/chat");
+          }
+      } catch (error) {
+          console.error('Error making POST request', error);
+      }
+
+    }
+    else if (!isSignInForm) {
       // signup logic
+      // todo
       var url =
         "https://localhost:7235/Account/register-user/" +
         name.current?.value +
