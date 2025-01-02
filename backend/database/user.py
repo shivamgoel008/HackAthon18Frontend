@@ -1,38 +1,29 @@
-import os
 import traceback
-from datetime import datetime
-from sqlalchemy.orm import sessionmaker
-from .tables.user import User
 from .connection import DBConnection
 
 
 class UserRepository:
     def __init__(self):
-        self.refresh_connection()
-        # time when connection refresh last
-        self.last_refreshed_at = datetime.now()
-        # refresh time in seconds
-        self.refresh_time = int(os.environ.get('DB_TOKEN_REFRESH_TIME'))
-
-    def refresh_connection(self):
         self.connection = DBConnection()
-        self.engine = self.connection.connect()
-        self.session = sessionmaker(bind=self.engine)()
-        self.last_refreshed_at = datetime.now()
+        self.client = self.connection.connect()
+        self.db = self.client["Makeathon18"]
+        self.collection = self.db["users"]
 
     def get_by_username(self, username):
-        if self.check_connection_expiry():
-            self.refresh_connection()
-        return self.session.query(User).filter(User.Username == username).first()
+        return self.collection.find({"username": username})
 
     def create_new_user(self, data: dict):
         try:
-            user = User(Username=data['username'], Password=data['password'])
-            self.session.add(user)
-            self.session.commit()
-            return {"message": "User created successfully"}
+            with self.client.start_session() as s:
+                s.start_transaction()
+                user = {
+                    "username": data["username"],
+                    "password": data["password"]
+                }
+                user_id = self.collection.insert_one(user).inserted_id
+                s.commit_transaction()
+                return {"message": f"User {user_id} created successfully"}
         except Exception:
-            self.session.rollback()
             stack_trace = traceback.format_exc()
             return {"error": stack_trace}
 
