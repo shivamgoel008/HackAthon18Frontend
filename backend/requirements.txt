@@ -14,5 +14,6 @@ elasticsearch==8.17.0
 azure-storage-blob==12.24.0
 python-logstash==0.4.8
 flask
+flask_cors
 Flask-JWT-Extended
 faiss-cpu
