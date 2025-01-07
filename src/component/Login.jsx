@@ -1,15 +1,11 @@
 import React, { useRef, useState } from 'react'
-import { useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { checkValidate } from '../Utils/validate';
-import axios from 'axios';
 import Header from './Header'
-import { addUser } from '../Utils/userSlice';
 import Cookies from "js-cookie";
-
+import { login, register } from "../services/loginService";
 
 const Login = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isSignInForm, setSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -27,27 +23,19 @@ const Login = () => {
       isSignInForm
     );
 
-    const payload = {
-      username: email.current?.value,
-      password: password.current?.value,
-    };
     setErrorMessage(message);
 
     if (message !== "") return;
 
     if (isSignInForm) {
       try {
-        const response = await axios.post("http://127.0.0.1:5000/login", payload);
-        console.log(response);
+        const data = await login(email.current?.value, password.current?.value)
+        console.log(data);
         debugger
-        if (response.status===200) {
-
-          Cookies.set("jwtToken", response.data.access_token, { secure: true, httpOnly: false });
-
+        Cookies.set("jwtToken", data.access_token, { secure: true, httpOnly: false });
         navigate("/chat");
-          navigate("/chat");
-        }
-      } catch (error) {
+      }
+      catch (error) {
         console.error('Error making POST request', error);
         setErrorMessage("Try Again With Correct username and password")
       }
@@ -57,11 +45,11 @@ const Login = () => {
       // signup logic
       try {
         debugger
-        const response = await axios.post("http://127.0.0.1:5000/register", payload);
-        if (response.status === 200) {
-          toggleSignInForm();
-        }
+        await register(email.current?.value,password.current?.value);
+        toggleSignInForm();
+        
       } catch (error) {
+        setErrorMessage("Please try again after some time");
         console.error('Error making POST request', error);
       }
 
