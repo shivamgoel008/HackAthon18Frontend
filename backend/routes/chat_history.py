@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-from backend.service.chat_history_service import ChatHistoryService
+from service.chat_history_service import ChatHistoryService
 
 chat_history_bp = Blueprint('chat_history', __name__)
 

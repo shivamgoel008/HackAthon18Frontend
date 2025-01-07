@@ -5,11 +5,11 @@ from langchain_core.output_parsers import SimpleJsonOutputParser
 from langgraph.graph import END
 from langchain_community.agent_toolkits.load_tools import load_tools
 from langgraph.prebuilt import ToolNode
-from backend.service.agentic_workflow.agents.base_agent import BaseAgent
-from backend.service.agentic_workflow.prompts import prompts
-from backend.service.agentic_workflow.utils import create_agent, agent_node, router
-from backend.utils import get_llm
-from backend.service.agentic_workflow.agents.tools import helpDocsSearch, logsAndEmailSearch, logsSearch, mailsSearch, \
+from service.agentic_workflow.agents.base_agent import BaseAgent
+from service.agentic_workflow.prompts import prompts
+from service.agentic_workflow.utils import create_agent, agent_node, router
+from utils import get_llm
+from service.agentic_workflow.agents.tools import helpDocsSearch, logsAndEmailSearch, logsSearch, mailsSearch, \
     pdfSearch, pptSearch, excelCSVSearch
 
 

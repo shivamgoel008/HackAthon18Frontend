@@ -1,6 +1,6 @@
 from datetime import datetime
 import traceback
-from backend.database.connection import DBConnection
+from database.connection import DBConnection
 
 
 class ChatHistoryRepository:

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 
-from backend.service.chat_service import ChatService
+from service.chat_service import ChatService
 
 assistant_bp = Blueprint('assistant', __name__)
 
