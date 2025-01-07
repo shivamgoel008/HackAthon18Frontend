@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
-from backend.database.user import UserRepository
+from backend.service.auth_service import AuthService
 
 auth_bp = Blueprint('auth', __name__)
-userRepository = UserRepository()
+auth_service = AuthService()
 
 
 @auth_bp.route('/login', methods=['POST'])
@@ -11,8 +11,7 @@ def login():
     username = request.json.get('username')
     password = request.json.get('password')
 
-    # user = userRepository.authenticate(username, password)
-    user = userRepository.get_by_username(username)
+    user = auth_service.authenticate(username, password)
     if user:
         access_token = create_access_token(identity=username)
         return jsonify(access_token=access_token), 200
@@ -26,7 +25,7 @@ def register():
         "username": request.json.get('username'),
         "password": request.json.get('password')
     }
-    return jsonify(userRepository.create_new_user(data)), 200
+    return jsonify(auth_service.create_new_user(data)), 200
 
 
 @auth_bp.route('/logout', methods=['GET'])
