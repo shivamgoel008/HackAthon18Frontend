@@ -10,12 +10,9 @@ faiss-cpu
 python-pptx
 flask
 Flask-JWT-Extended
-scrypt
 elasticsearch==8.17.0
 azure-storage-blob==12.24.0
 python-logstash==0.4.8
 flask
 Flask-JWT-Extended
-scrypt
-bas4
 faiss-cpu
