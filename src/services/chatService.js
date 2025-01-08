@@ -25,3 +25,19 @@ export const gptResponse = async (chat_id,content) => {
         throw error;
     }
 };
+
+export const chatHistory = async () => {
+    try {
+        debugger
+        const response = await axios.get(`${API_BASE_URL}/chat_history/user`, {
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getCookie()}` 
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error during login", error);
+        throw error;
+    }
+};

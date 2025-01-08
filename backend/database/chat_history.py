@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import traceback
 from database.connection import DBConnection
 
@@ -17,7 +17,7 @@ class ChatHistoryRepository:
                 with session.start_transaction():
                     chat = self.collection.find_one({"user_id": user_id, "chat_id": chat_id})
                     print(chat)
-                    message_info["timestamp"] = datetime.now()
+                    message_info["timestamp"] = datetime.now().astimezone(timezone.utc)
                     print(message_info)
                     if chat:
                         self.collection.update_one(
