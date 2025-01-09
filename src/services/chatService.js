@@ -26,7 +26,7 @@ export const gptResponse = async (chat_id,content) => {
     }
 };
 
-export const chatHistory = async () => {
+export const allChatHistory = async () => {
     try {
         debugger
         const response = await axios.get(`${API_BASE_URL}/chat_history/user`, {
@@ -36,6 +36,23 @@ export const chatHistory = async () => {
             },
         });
         return response.data;
+    } catch (error) {
+        console.error("Error during login", error);
+        throw error;
+    }
+};
+
+
+export const chatHistory = async (chat_id) => {
+    try {
+        debugger
+        const response = await axios.get(`${API_BASE_URL}/chat_history/chat?chat_id=${chat_id}`, {
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getCookie()}` 
+            },
+        });
+        return response.data.messages;
     } catch (error) {
         console.error("Error during login", error);
         throw error;

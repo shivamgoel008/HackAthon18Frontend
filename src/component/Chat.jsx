@@ -2,21 +2,22 @@ import React, { useState, useEffect } from 'react';
 import Conversation from './Conversation';
 import Messages from './Messages';
 import { v4 as uuidv4 } from 'uuid';
-import { chatHistory, gptResponse } from '../services/chatService';
-import { formatDistanceToNow} from 'date-fns';
+import { allChatHistory, gptResponse } from '../services/chatService';
+import { formatDistanceToNow } from 'date-fns';
 
 const Chat = () => {
-    const [data, setData] = useState([]); 
+    const [data, setData] = useState([]);
+    const [selectedChatId, setSelectedChatId] = useState(null);
 
     const fetchChatHistory = async () => {
         try {
-            const response = await chatHistory();
+            const response = await allChatHistory();
             // sort in descending order: newest first
             const sortedResponse = response.sort((a, b) => {
-                const aTime = new Date(a.messages[0].timestamp); 
-                const bTime = new Date(b.messages[0].timestamp); 
-            
-                return bTime - aTime; 
+                const aTime = new Date(a.messages[0].timestamp);
+                const bTime = new Date(b.messages[0].timestamp);
+
+                return bTime - aTime;
             });
             const modifiedData = sortedResponse.map((item) => ({
                 chatId: item.chat_id,
@@ -38,11 +39,16 @@ const Chat = () => {
     const handleNewChatClick = async () => {
         const chat_id = uuidv4();
         try {
-            await gptResponse(chat_id, "I need help");
+            await gptResponse(chat_id, "hey bitch lodu");
             fetchChatHistory(); // re-fetch chat history after creating a new chat
+            setSelectedChatId(chat_id)
         } catch (error) {
             console.error("Error creating new chat:", error);
         }
+    };
+
+    const handleChatSelect = (chatId) => {
+        setSelectedChatId(chatId);
     };
 
     return (
@@ -60,11 +66,11 @@ const Chat = () => {
                                 New Chat
                             </div>
                         </div>
-                        <Conversation data={data} />
+                        <Conversation data={data} onClick={handleChatSelect} />
                     </div>
                 </div>
                 <div className="flex-grow h-screen p-2 rounded-md">
-                    <Messages />
+                    <Messages chatId={selectedChatId} />
                 </div>
             </div>
         </div>

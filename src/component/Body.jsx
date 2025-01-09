@@ -1,7 +1,6 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./Login";
-import Header from "./Header";
 import Chat from "./Chat";
 
 const Body = () => {
