@@ -1,4 +1,4 @@
-from backend.database.chat_history import ChatHistoryRepository
+from database.chat_history import ChatHistoryRepository
 
 
 class ChatHistoryService:

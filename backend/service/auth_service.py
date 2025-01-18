@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from backend.database.user import UserRepository
+from database.user import UserRepository
 
 
 class AuthService:

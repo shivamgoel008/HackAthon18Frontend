@@ -1,14 +1,11 @@
 import React, { useRef, useState } from 'react'
-import { useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { checkValidate } from '../Utils/validate';
-import axios from 'axios';
 import Header from './Header'
-import { addUser } from '../Utils/userSlice';
-
+import Cookies from "js-cookie";
+import { login, register } from "../services/loginService";
 
 const Login = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isSignInForm, setSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -17,53 +14,46 @@ const Login = () => {
     setSignInForm(!isSignInForm);
   };
 
-  const handleButtonClick =async() => {
+  const handleButtonClick = async () => {
 
     var message = checkValidate(
-      email.current?.value ,
-      password.current?.value ,
+      email.current?.value,
+      password.current?.value,
       name.current?.value,
       isSignInForm
     );
+
     setErrorMessage(message);
 
     if (message !== "") return;
 
     if (isSignInForm) {
-      // todo
-    }
-
-    if (!isSignInForm) {
-      // signup logic
-      var url =
-        "https://localhost:7235/Account/register-user/" +
-        name.current?.value +
-        "/" +
-        email.current?.value +
-        "/" +
-        password.current?.value;
-
-        try {
-          // const response = await axios.post(url);
-          // console.log(response);
-          if(true){
-            
-            dispatch(
-              addUser(
-                {
-                  uid: "shivamgoel150",
-                  email: "shivamgoel150@gmail.com",
-                  displayName: "Shivam Goel",
-                  photoURL: "",
-                })
-            );
-            navigate("/chat");
-          }
-      } catch (error) {
-          console.error('Error making POST request', error);
+      try {
+        const data = await login(email.current?.value, password.current?.value)
+        console.log(data);
+        debugger
+        Cookies.set("jwtToken", data.access_token, { secure: true, httpOnly: false });
+        navigate("/chat");
+      }
+      catch (error) {
+        console.error('Error making POST request', error);
+        setErrorMessage("Try Again With Correct username and password")
       }
 
-      
+    }
+    else if (!isSignInForm) {
+      // signup logic
+      try {
+        debugger
+        await register(email.current?.value,password.current?.value);
+        toggleSignInForm();
+        
+      } catch (error) {
+        setErrorMessage("Please try again after some time");
+        console.error('Error making POST request', error);
+      }
+
+
     }
   }
 
@@ -114,7 +104,7 @@ const Login = () => {
             : "Already registered? Sign In Now"}
         </p>
       </form>
-      </div>
+    </div>
 
   )
 }

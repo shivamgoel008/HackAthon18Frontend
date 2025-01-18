@@ -1,5 +1,5 @@
 import os
-
+from flask_cors import CORS
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from routes.auth import auth_bp
@@ -7,6 +7,7 @@ from routes.assistant import assistant_bp
 from routes.chat_history import chat_history_bp
 
 app = Flask(__name__)
+CORS(app)
 app.config['JWT_SECRET_KEY'] = os.environ['JWT_SECRET_KEY']
 jwt = JWTManager(app)
 app.register_blueprint(auth_bp)
