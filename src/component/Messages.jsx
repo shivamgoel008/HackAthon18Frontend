@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import logo from '../logo.svg';
-import { chatHistory, gptResponse } from '../services/chatService';
+import { chatHistory, gptResponse, saveMessage } from '../services/chatService';
+import {ReactTyped} from 'react-typed';
 
 const Messages = ({ chatId }) => {
     const [messages, setMessages] = useState([]);
@@ -9,6 +10,9 @@ const Messages = ({ chatId }) => {
     const [error, setError] = useState(null);
     const [inputValue, setInputValue] = useState("");
     const [isSending, setIsSending] = useState(false);
+    const [typingMessage, setTypingMessage] = useState(null); // holds the typing content for GPT responses
+
+    const messagesEndRef = useRef(null); 
 
     useEffect(() => {
         const fetchMessages = async () => {
@@ -38,27 +42,26 @@ const Messages = ({ chatId }) => {
         setIsSending(true);
 
         try {
-            const userMessage = {
-                content: inputValue.trim(),
-                role: 'user',
-                timestamp: new Date().toISOString(),
-            };
-
-            // Optimistically add user's message
-            setMessages((prevMessages) => [...prevMessages, userMessage]);
+            
+            setInputValue("");
 
             const response = await gptResponse(chatId, inputValue.trim());
 
-            // Add bot response
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                {
-                    content: response.message,
-                    role: 'bot',
-                    timestamp: new Date().toISOString(),
-                },
-            ]);
-            setInputValue("");
+            // Simulate typing effect
+            setTypingMessage(response.message);
+
+            // Wait for typing to complete, then update messages
+            setTimeout(async () => {
+                await saveMessage(chatId, response.message);
+                
+
+                const chatIdHistory = await chatHistory(chatId);
+                const sortedMessages = chatIdHistory.sort(
+                    (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+                );
+                setMessages(sortedMessages);
+                setTypingMessage(null);
+            }, response.message.length * 50); // Adjust typing speed
         } catch (err) {
             console.error("Error sending message:", err);
             setError("Failed to send message. Please try again.");
@@ -68,25 +71,11 @@ const Messages = ({ chatId }) => {
     };
 
     useEffect(() => {
-        // Typing animation logic for the latest bot message
-        const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    
-        const animateTyping = async () => {
-            const elements = document.getElementsByClassName("typing-animation");
-            const lastElement = elements[elements.length - 1]; // Target only the latest bot message
-            if (lastElement) {
-                const text = lastElement.getAttribute("data-text");
-                lastElement.innerHTML = ""; // Clear the content to start typing animation
-                for (let character of text) {
-                    lastElement.innerHTML += character;
-                    await sleep(50); // Adjust typing speed as needed
-                }
-            }
-        };
-    
-        animateTyping();
-    }, [messages]);
-    
+        // Auto-scroll 
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messages, typingMessage]);
 
     if (!chatId) {
         return (
@@ -116,6 +105,7 @@ const Messages = ({ chatId }) => {
         <div className="flex-grow h-full flex flex-col">
             {/* Messages List */}
             <div className="w-full flex-grow bg-gray-100 my-2 p-2 overflow-y-auto">
+                
                 {messages.map((item, index) => (
                     item.role === 'user' ? (
                         <div key={index} className="flex justify-end">
@@ -132,10 +122,16 @@ const Messages = ({ chatId }) => {
                         <div key={index} className="flex items-end w-3/4">
                             <img className="w-8 h-8 m-3 rounded-full" src={logo} alt="avatar" />
                             <div className="p-3 mx-3 my-1 rounded-2xl rounded-bl-none sm:w-3/4 md:w-3/6 outline outline-black">
-                                <p
-                                    className="text-black typing-animation"
-                                    data-text={item.content}
-                                ></p>
+                                {item.content === typingMessage ? (
+                                    <ReactTyped
+                                        strings={[item.content]}
+                                        typeSpeed={50}
+                                        showCursor={false}
+                                        loop={false}
+                                    />
+                                ) : (
+                                    <p className="text-black">{item.content}</p>
+                                )}
                                 <div className="text-xs text-gray-400">
                                     {formatDistanceToNow(new Date(item.timestamp), { addSuffix: true })}
                                 </div>
@@ -143,6 +139,21 @@ const Messages = ({ chatId }) => {
                         </div>
                     )
                 ))}
+
+                {/* Typing Effect */}
+                {typingMessage && (
+                    <div className="flex items-end w-3/4">
+                        <img className="w-8 h-8 m-3 rounded-full" src={logo} alt="avatar" />
+                        <div className="p-3 mx-3 my-1 rounded-2xl rounded-bl-none sm:w-3/4 md:w-3/6 outline outline-black">
+                            <ReactTyped
+                                strings={[typingMessage]}
+                                typeSpeed={50}
+                                showCursor={false}
+                            />
+                        </div>
+                    </div>
+                )}
+                <div ref={messagesEndRef} />
             </div>
 
             {/* Message Input Section */}
