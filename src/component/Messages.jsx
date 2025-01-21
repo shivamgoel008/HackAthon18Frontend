@@ -79,7 +79,7 @@ const Messages = ({ chatId }) => {
 
     if (!chatId) {
         return (
-            <div className="text-gray-500 text-center p-5">
+            <div className="flex items-center justify-center h-full text-gray-500 text-center">
                 Select a chat to view messages.
             </div>
         );
