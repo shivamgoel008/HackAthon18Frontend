@@ -38,6 +38,10 @@ const Messages = ({ chatId }) => {
         fetchMessages();
     }, [chatId]);
 
+    const setTypingFalse=()=>{
+        setTyping(false);
+    }
+
     const handleSendMessage = async () => {
         if (!inputValue.trim() || isSending) return;
         setIsSending(true);
@@ -65,16 +69,20 @@ const Messages = ({ chatId }) => {
     };
 
     useEffect(() => {
+        // Auto-scroll 
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
         const scrollToBottom = () => {
             if (messagesEndRef.current) {
                 messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
             }
         };
-        // Set up an interval to scroll every 1 second
-        const intervalId = setInterval(scrollToBottom, 1000);
-        return () => clearInterval(intervalId);
-    }, []);
-    
+        if (typing === true) {
+            const intervalId = setInterval(scrollToBottom, 1000);
+            return () => clearInterval(intervalId);
+        }
+    }, [messages,typing]);
 
     if (!chatId) {
         return (
@@ -112,6 +120,7 @@ const Messages = ({ chatId }) => {
                                 showCursor={false}
                                 loop={false}
                                 className=' text-white'
+                                onComplete={setTypingFalse}
                             />
                         }
                         <div className="text-xs text-gray-400">
@@ -146,6 +155,7 @@ const Messages = ({ chatId }) => {
                                 showCursor={false}
                                 loop={false}
                                 className=' text-white'
+                                onComplete={setTypingFalse}
                             />
                         }
                         <div className="text-xs text-gray-400">
@@ -154,7 +164,6 @@ const Messages = ({ chatId }) => {
                     </div>
                 </div>
             )
-
         } else {
             return (
                 <div key={index} className="flex items-end w-3/4">
