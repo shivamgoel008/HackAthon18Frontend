@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import Conversation from './Conversation';
 import Messages from './Messages';
 import { v4 as uuidv4 } from 'uuid';
-import { allChatHistory, gptResponse,deleteChatHistory } from '../services/chatService';
+import { allChatHistory, gptResponse,deleteChatHistory, saveMessage } from '../services/chatService';
 import { formatDistanceToNow } from 'date-fns';
 import Header from './Header';
 import {APPLICATION_NAME} from '../Utils/constants'
+import { getCookie, getSubjectFromJwt, getTextBeforeAt } from '../Utils/helper';
 const Chat = () => {
     const [data, setData] = useState([]);
     const [selectedChatId, setSelectedChatId] = useState(null);
@@ -40,7 +41,8 @@ const Chat = () => {
     const handleNewChatClick = async () => {
         const chat_id = uuidv4();
         try {
-            await gptResponse(chat_id, "hey");
+            const username = getTextBeforeAt(getSubjectFromJwt(getCookie()));
+            await saveMessage(chat_id, "Hi "+username+", How can i help you");
             fetchChatHistory(); // re-fetch chat history after creating a new chat
             setSelectedChatId(chat_id)
         } catch (error) {
