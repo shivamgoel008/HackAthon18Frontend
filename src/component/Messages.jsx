@@ -104,14 +104,14 @@ const Messages = ({ chatId }) => {
     return (
         <div className="flex-grow h-full flex flex-col">
             {/* Messages List */}
-            <div className="w-full flex-grow bg-gray-100 my-2 p-2 overflow-y-auto">
+            <div className="w-full flex-grow bg-[#212121] my-2 p-2 overflow-y-auto rounded-t-3xl">
                 
                 {messages.map((item, index) => (
                     item.role === 'user' ? (
                         <div key={index} className="flex justify-end">
-                            <div className="flex items-end w-auto m-1 rounded-xl rounded-br-none sm:w-3/4 md:w-auto outline outline-black">
+                            <div className="flex items-end w-auto m-1 rounded-xl rounded-br-none sm:w-3/4 md:w-auto outline bg-[#303030] outline-black">
                                 <div className="p-2">
-                                    <p className="text-black">{item.content}</p>
+                                    <p className="text-white">{item.content}</p>
                                     <div className="flex justify-end text-xs text-gray-400">
                                         {formatDistanceToNow(new Date(item.timestamp), { addSuffix: true })}
                                     </div>
@@ -121,7 +121,7 @@ const Messages = ({ chatId }) => {
                     ) : (
                         <div key={index} className="flex items-end w-3/4">
                             <img className="w-8 h-8 m-3 rounded-full" src={logo} alt="avatar" />
-                            <div className="p-3 mx-3 my-1 rounded-2xl rounded-bl-none sm:w-3/4 md:w-3/6 outline outline-black">
+                            <div className="p-3 mx-3 my-1 rounded-2xl rounded-bl-none sm:w-3/4 md:w-3/6 outline bg-[#303030] outline-black">
                                 {item.content === typingMessage ? (
                                     <ReactTyped
                                         strings={[item.content]}
@@ -130,7 +130,7 @@ const Messages = ({ chatId }) => {
                                         loop={false}
                                     />
                                 ) : (
-                                    <p className="text-black">{item.content}</p>
+                                    <p className="text-white">{item.content}</p>
                                 )}
                                 <div className="text-xs text-gray-400">
                                     {formatDistanceToNow(new Date(item.timestamp), { addSuffix: true })}
@@ -157,7 +157,7 @@ const Messages = ({ chatId }) => {
             </div>
 
             {/* Message Input Section */}
-            <div className="h-15 p-3 rounded-xl rounded-tr-none rounded-tl-none bg-gray-100 dark:bg-gray-800">
+            <div className="h-15 p-3 rounded-xl rounded-tr-none rounded-tl-none bg-[#2f2f2f]">
                 <div className="flex items-center">
                     <div className="p-2 text-gray-600 dark:text-gray-200">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -166,7 +166,7 @@ const Messages = ({ chatId }) => {
                     </div>
                     <div className="search-chat flex flex-grow p-2">
                         <input
-                            className="input text-gray-700 dark:text-gray-200 text-sm p-5 focus:outline-none bg-gray-100 dark:bg-gray-800 flex-grow rounded-l-md"
+                            className="input text-white text-sm p-5 focus:outline-none bg-[#2f2f2f] flex-grow rounded-l-md"
                             type="text"
                             placeholder="Type your message ..."
                             value={inputValue}
@@ -175,7 +175,7 @@ const Messages = ({ chatId }) => {
                             disabled={isSending}
                         />
                         <div
-                            className={`bg-gray-100 dark:bg-gray-800 dark:text-gray-200 flex justify-center items-center pr-3 text-gray-400 rounded-r-md cursor-pointer ${isSending ? 'opacity-50' : ''}`}
+                            className={`bg-[#2f2f2f]  flex justify-center items-center pr-3 text-white rounded-r-md cursor-pointer ${isSending ? 'opacity-50' : ''}`}
                             onClick={handleSendMessage}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Conversation from './Conversation';
 import Messages from './Messages';
 import { v4 as uuidv4 } from 'uuid';
-import { allChatHistory, gptResponse } from '../services/chatService';
+import { allChatHistory, gptResponse,deleteChatHistory } from '../services/chatService';
 import { formatDistanceToNow } from 'date-fns';
 import Header from './Header';
 import {APPLICATION_NAME} from '../Utils/constants'
@@ -52,13 +52,18 @@ const Chat = () => {
         setSelectedChatId(chatId);
     };
 
+    const handleChatDelete=(chatId) =>{
+        //todo
+        deleteChatHistory(chatId);
+    }
+
     return (
         <div className="h-screen flex flex-col">
             <div className="">
                 <Header />
             </div>
-            <div className="flex flex-grow overflow-hidden  mt-3 bg-white dark:bg-gray-900">
-            <div className="w-80 h-full  p-2 hidden md:block">
+            <div className="flex flex-grow overflow-hidden  mt-px bg-white dark:bg-[#171717]">
+            <div className="w-80 h-full  p-2 hidden md:block ">
                     <div className="h-full overflow-y-auto">
                         <div className="text-xl font-extrabold text-white p-3">{APPLICATION_NAME}</div>
                         <div className="flex justify-between">
@@ -70,7 +75,7 @@ const Chat = () => {
                                 New Chat
                             </div>
                         </div>
-                        <Conversation data={data} onClick={handleChatSelect} />
+                        <Conversation data={data} onClick={handleChatSelect} onDelete={handleChatDelete}/>
                     </div>
                 </div>
                 <div className="flex-grow h-full p-2 rounded-md overflow-y-auto">

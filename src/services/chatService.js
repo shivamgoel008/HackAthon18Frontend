@@ -59,6 +59,22 @@ export const chatHistory = async (chat_id) => {
     }
 };
 
+export const deleteChatHistory = async (chat_id) => {
+    // todo
+    try {
+        debugger
+        const response = await axios.get(`${API_BASE_URL}/chat_history/chat?chat_id=${chat_id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getCookie()}`
+            },
+        });
+        return response.data.messages;
+    } catch (error) {
+        console.error("Error during login", error);
+        throw error;
+    }
+};
 
 export const saveMessage = async (chatId, message) => {
     debugger
