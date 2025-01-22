@@ -1,7 +1,7 @@
 import React from 'react';
 import ConversationItem from './ConversationItem';
 
-const Conversation = ({ data,onClick }) => {
+const Conversation = ({ data, onClick, onDelete }) => {
     return (
         <div className="px-1">
             {data.map((item) => (
@@ -10,6 +10,7 @@ const Conversation = ({ data,onClick }) => {
                     message={item.message}
                     time={item.time}
                     onClick={() => onClick(item.chatId)}
+                    onDelete={() => onDelete(item.chatId)}
                 />
             ))}
         </div>

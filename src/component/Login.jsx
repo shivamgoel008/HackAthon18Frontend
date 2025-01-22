@@ -4,6 +4,7 @@ import { checkValidate } from '../Utils/validate';
 import Header from './Header'
 import Cookies from "js-cookie";
 import { login, register } from "../services/loginService";
+import {APPLICATION_NAME} from "../Utils/constants"
 
 const Login = () => {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ const Login = () => {
   const password = useRef(null);
   const name = useRef(null);
   return (
-    <div className=' bg-black  bg-opacity-50'>
+    <div className=''>
       <Header />
       <form
         onSubmit={(e) => e.preventDefault()}
@@ -100,7 +101,7 @@ const Login = () => {
         </button>
         <p className="py-4 cursor-pointer text-black" onClick={toggleSignInForm} >
           {isSignInForm
-            ? "New to ChatGPT? Sign Up Now"
+            ? "New to "+APPLICATION_NAME+ " ? Sign Up Now"
             : "Already registered? Sign In Now"}
         </p>
       </form>

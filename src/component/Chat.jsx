@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Conversation from './Conversation';
 import Messages from './Messages';
 import { v4 as uuidv4 } from 'uuid';
-import { allChatHistory, gptResponse } from '../services/chatService';
+import { allChatHistory, gptResponse,deleteChatHistory } from '../services/chatService';
 import { formatDistanceToNow } from 'date-fns';
-
+import Header from './Header';
+import {APPLICATION_NAME} from '../Utils/constants'
 const Chat = () => {
     const [data, setData] = useState([]);
     const [selectedChatId, setSelectedChatId] = useState(null);
@@ -39,7 +40,7 @@ const Chat = () => {
     const handleNewChatClick = async () => {
         const chat_id = uuidv4();
         try {
-            await gptResponse(chat_id, "hey bitch lodu");
+            await gptResponse(chat_id, "hey");
             fetchChatHistory(); // re-fetch chat history after creating a new chat
             setSelectedChatId(chat_id)
         } catch (error) {
@@ -51,25 +52,33 @@ const Chat = () => {
         setSelectedChatId(chatId);
     };
 
+    const handleChatDelete=(chatId) =>{
+        //todo
+        deleteChatHistory(chatId);
+    }
+
     return (
-        <div className="">
-            <div className="flex bg-white dark:bg-gray-900">
-                <div className="w-80 h-screen dark:bg-gray-800 bg-gray-100 p-2 hidden md:block">
+        <div className="h-screen flex flex-col">
+            <div className="">
+                <Header />
+            </div>
+            <div className="flex flex-grow overflow-hidden  mt-px bg-white dark:bg-[#171717]">
+            <div className="w-80 h-full  p-2 hidden md:block ">
                     <div className="h-full overflow-y-auto">
-                        <div className="text-xl font-extrabold text-gray-600 dark:text-gray-200 p-3">ChatGpt</div>
+                        <div className="text-xl font-extrabold text-white p-3">{APPLICATION_NAME}</div>
                         <div className="flex justify-between">
-                            <div className="text-lg font-semibol text-gray-600 dark:text-gray-200 p-3">Recent</div>
+                            <div className="text-lg font-semibold text-white p-3">Recent</div>
                             <div
-                                className="text-lg font-semibol text-gray-600 dark:text-gray-200 p-3 cursor-pointer"
+                                className="text-lg font-semibold text-white p-3 cursor-pointer hover:text-gray-300"
                                 onClick={handleNewChatClick}
                             >
                                 New Chat
                             </div>
                         </div>
-                        <Conversation data={data} onClick={handleChatSelect} />
+                        <Conversation data={data} onClick={handleChatSelect} onDelete={handleChatDelete}/>
                     </div>
                 </div>
-                <div className="flex-grow h-screen p-2 rounded-md">
+                <div className="flex-grow h-full p-2 rounded-md overflow-y-auto">
                     <Messages chatId={selectedChatId} />
                 </div>
             </div>
